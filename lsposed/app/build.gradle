@@ -1,0 +1,63 @@
+plugins {
+    id 'com.android.application'
+}
+
+// 发布签名完全来自环境变量，仓库内不含口令与本机路径。
+// 三个变量缺任一，release 构建回落到 debug 签名（仅供本地自测）。
+//   CE_KEYSTORE  keystore 文件路径
+//   CE_KEY_ALIAS keystore 内的别名
+//   CE_KEY_PASS  口令（store 与 key 使用同一口令）
+def releaseKeystore = System.getenv('CE_KEYSTORE')
+def releaseKeyAlias = System.getenv('CE_KEY_ALIAS')
+def releaseKeyPass = System.getenv('CE_KEY_PASS')
+def hasReleaseSigning = releaseKeystore && releaseKeyAlias && releaseKeyPass
+
+android {
+    namespace 'com.locrec.app'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.locrec.app'
+        minSdk 24
+        targetSdk 34
+        versionCode 27
+        versionName "2.2.0"
+    }
+
+    if (hasReleaseSigning) {
+        signingConfigs {
+            release {
+                storeFile file(releaseKeystore)
+                storePassword releaseKeyPass
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPass
+                // 发布包必须可追溯，不让 AGP 自动降级到 v1 签名
+                enableV1Signing true
+                enableV2Signing true
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            signingConfig hasReleaseSigning ? signingConfigs.release : signingConfigs.debug
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lint {
+        // 纯 Java Xposed 模块不引入 Kotlin; 避免 lintVital 为无关编译器访问网络
+        checkReleaseBuilds false
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    // Xposed 框架 API: 仅编译期依赖, 不打包进 APK
+    compileOnly files('libs/api-82.jar')
+}

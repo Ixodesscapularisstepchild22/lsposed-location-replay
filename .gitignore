@@ -1,0 +1,26 @@
+# 实录产物 / 样本 / 反编译 / 发行物不入库
+output/
+dumps/
+target/
+decompiled/
+
+# 构建产物
+**/build/
+**/.gradle/
+local.properties
+*.apk
+*.apk.idsig
+*.log
+*.tmp
+
+# 签名与凭据（绝不入库）
+*.jks
+*.keystore
+keystore.properties
+.env
+
+# 编辑器 / 系统
+.idea/
+*.iml
+Thumbs.db
+.DS_Store

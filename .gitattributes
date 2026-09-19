@@ -1,0 +1,14 @@
+# 仓库内一律使用 LF：gradlew 在 Linux/macOS 下必须是 LF 才能执行
+* text=auto eol=lf
+
+# Windows 批处理必须保持 CRLF，否则 cmd.exe 解析异常
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# 二进制文件，禁止换行转换
+*.jar binary
+*.apk binary
+*.png binary
+*.jpg binary
+*.jks binary
+*.keystore binary

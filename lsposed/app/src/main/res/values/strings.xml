@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Default (English). Chinese: values-zh-rCN/strings.xml. Android picks by system locale. -->
+<resources>
+    <string name="app_name">LocRec</string>
+    <string name="app_sub">Record current environment → pick a place → replay to scoped apps</string>
+
+    <string name="enable_spoof">Enable spoofing</string>
+    <string name="toast_no_place">No place selected yet. Record one or pick one first.</string>
+
+    <string name="section_record">Record</string>
+    <string name="btn_record">Start recording (1 min)</string>
+    <string name="btn_recording_preparing">Preparing…</string>
+    <string name="btn_recording">Recording…</string>
+    <string name="toast_recording_keep_screen">Recording — keep the screen on</string>
+    <string name="hint_keep_screen">Keep the screen on · screen-off freezes capture and voids the recording</string>
+
+    <string name="section_status">Status</string>
+    <string name="section_places">Saved places · tap to switch</string>
+    <string name="btn_note">Note</string>
+    <string name="btn_rename">Rename</string>
+    <string name="btn_delete">Delete</string>
+
+    <string name="toast_spoof_auto_off">Spoofing paused · recording must capture the real environment</string>
+    <string name="progress_simple">%1$s / %2$s</string>
+    <string name="progress_fmt">%1$s / %2$s  ·  fix %3$d  ·  WiFi %4$d</string>
+    <string name="toast_spoof_restored">Recording done · spoofing restored</string>
+    <string name="toast_save_failed">Recording finished but saving failed — see logcat</string>
+
+    <string name="dlg_done_title">Recording complete</string>
+    <string name="dlg_done_msg">fix %1$d (GPS %2$d)\nWiFi %3$d · cells %4$d · satellites %5$d · NMEA %6$d\n\nSet as current spoofing place. You can add a note now.</string>
+    <string name="dlg_btn_write_note">Add note</string>
+    <string name="dlg_btn_done">Done</string>
+
+    <string name="toast_pick_place_first">Pick a place first</string>
+    <string name="hint_note">e.g. office / home / school</string>
+    <string name="dlg_note_title">Note</string>
+    <string name="dlg_rename_title">Rename</string>
+    <string name="dlg_btn_save">Save</string>
+    <string name="toast_note_saved">Note saved</string>
+    <string name="toast_note_save_failed">Save failed: %1$s</string>
+    <string name="toast_rename_failed">Rename failed: %1$s</string>
+    <string name="dlg_btn_clear">Clear</string>
+    <string name="toast_note_cleared">Note cleared</string>
+    <string name="dlg_btn_cancel">Cancel</string>
+
+    <string name="dlg_delete_title">Delete place</string>
+    <string name="dlg_delete_msg">Delete the recording data of %1$s? This cannot be undone.</string>
+    <string name="toast_deleted">Deleted</string>
+    <string name="toast_delete_failed">Delete failed: %1$s</string>
+    <string name="toast_no_place_selected">No place selected</string>
+    <string name="toast_switch_failed">Switch failed: %1$s</string>
+
+    <string name="status_spoof_on">● Spoofing ON</string>
+    <string name="status_spoof_off">○ Spoofing OFF</string>
+    <string name="status_no_place">\nNo place yet · record first</string>
+    <string name="status_payload_missing">\nSelected place has no data (%1$s) · re-pick or re-record</string>
+    <string name="tag_note">Note: </string>
+    <string name="status_note_fmt">\nNote: %1$s</string>
+    <string name="warn_no_fix">⚠ no fix</string>
+    <string name="warn_no_wifi">⚠ no WiFi</string>
+    <string name="status_recorded_ago">\nRecorded %1$d min ago</string>
+    <string name="status_no_fix">\n⚠ No location fix · re-record outdoors</string>
+    <string name="status_no_wifi">\n⚠ No WiFi data</string>
+    <string name="status_parse_failed">\nParse failed · re-record</string>
+    <string name="status_place_count">\n\n%1$d place(s) in total</string>
+    <string name="places_empty">No places yet · tap Start recording above</string>
+
+    <string name="rec_channel">Recording</string>
+    <string name="rec_notif_title">Recording location</string>
+    <string name="rec_notif_text">Stay at the target place and keep this running</string>
+
+    <!-- End-of-record diagnostics (machine-readable tag lives in RecorderService) -->
+    <string name="diag_no_cell">cell cross-checks will contradict the replayed location</string>
+    <string name="diag_no_gnss">satellite status cannot be replayed</string>
+    <string name="diag_no_gps_fix">sky not visible / indoors, recorded coordinates are untrustworthy</string>
+    <string name="diag_no_scan">see the startScan/broadcast diagnostics above</string>
+    <string name="diag_scan_stale">%1$d/%2$d scans were served from cache — keep the screen on and this app in the foreground while recording; screen-off suspends scans</string>
+
+    <!-- Dataset import / export (SAF) -->
+    <string name="btn_export">Export</string>
+    <string name="btn_import">Import</string>
+    <string name="export_file_name">locrec-place.json</string>
+    <string name="toast_no_place_to_export">No place selected to export</string>
+    <string name="toast_export_ok">Exported</string>
+    <string name="toast_export_failed">Export failed: %1$s</string>
+    <string name="toast_import_ok">Imported: %1$s</string>
+    <string name="toast_import_failed">Import failed — not a valid LocRec dataset file</string>
+    <string name="toast_import_read_failed">Import failed: %1$s</string>
+    <string name="toast_import_too_large">Import failed — file exceeds the 32 MB limit</string>
+</resources>

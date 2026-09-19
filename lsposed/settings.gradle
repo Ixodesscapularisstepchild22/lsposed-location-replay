@@ -1,0 +1,2 @@
+// LSPosed 模块项目 - 定位伪造 (对勾选作用域的 App 生效)
+include ':app'

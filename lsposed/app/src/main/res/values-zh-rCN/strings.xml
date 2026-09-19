@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 简体中文 (values-zh-rCN): 系统语言为中文时自动选用 -->
+<resources>
+    <string name="app_name">定位实录</string>
+    <string name="app_sub">实录当前环境 → 选中地点 → 对作用域 App 回放</string>
+
+    <string name="enable_spoof">启用伪装</string>
+    <string name="toast_no_place">还没有选中地点, 先实录或选一个</string>
+
+    <string name="section_record">录制</string>
+    <string name="btn_record">开始实录 (1 分钟)</string>
+    <string name="btn_recording_preparing">准备录制…</string>
+    <string name="btn_recording">录制中…</string>
+    <string name="toast_recording_keep_screen">录制中, 请保持亮屏</string>
+    <string name="hint_keep_screen">保持亮屏 · 息屏会冻结采集导致整条作废</string>
+
+    <string name="section_status">当前状态</string>
+    <string name="section_places">已保存地点 · 点选切换</string>
+    <string name="btn_note">备注</string>
+    <string name="btn_rename">重命名</string>
+    <string name="btn_delete">删除</string>
+
+    <string name="toast_spoof_auto_off">已自动关闭伪装 · 实录必须录真实环境</string>
+    <string name="progress_simple">%1$s / %2$s</string>
+    <string name="progress_fmt">%1$s / %2$s  ·  fix %3$d  ·  WiFi %4$d</string>
+    <string name="toast_spoof_restored">录制完成 · 已恢复伪装</string>
+    <string name="toast_save_failed">录制结束但保存失败, 看 logcat</string>
+
+    <string name="dlg_done_title">录制完成</string>
+    <string name="dlg_done_msg">fix %1$d (GPS %2$d)\nWiFi %3$d · 基站 %4$d · 卫星 %5$d · NMEA %6$d\n\n已自动设为当前伪装地点。可立即写备注。</string>
+    <string name="dlg_btn_write_note">写备注</string>
+    <string name="dlg_btn_done">完成</string>
+
+    <string name="toast_pick_place_first">先选一个地点</string>
+    <string name="hint_note">例如: 公司 / 家 / 学校</string>
+    <string name="dlg_note_title">备注</string>
+    <string name="dlg_rename_title">重命名</string>
+    <string name="dlg_btn_save">保存</string>
+    <string name="toast_note_saved">备注已保存</string>
+    <string name="toast_note_save_failed">保存失败: %1$s</string>
+    <string name="toast_rename_failed">重命名失败: %1$s</string>
+    <string name="dlg_btn_clear">清除</string>
+    <string name="toast_note_cleared">已清除备注</string>
+    <string name="dlg_btn_cancel">取消</string>
+
+    <string name="dlg_delete_title">删除地点</string>
+    <string name="dlg_delete_msg">删除 %1$s 的实录数据, 不可恢复。</string>
+    <string name="toast_deleted">已删除</string>
+    <string name="toast_delete_failed">删除失败: %1$s</string>
+    <string name="toast_no_place_selected">没有选中的地点</string>
+    <string name="toast_switch_failed">切换失败: %1$s</string>
+
+    <string name="status_spoof_on">● 伪装开启</string>
+    <string name="status_spoof_off">○ 伪装关闭</string>
+    <string name="status_no_place">\n尚无地点 · 先实录</string>
+    <string name="status_payload_missing">\n选中项缺数据 (%1$s) · 重选或重录</string>
+    <string name="tag_note">备注: </string>
+    <string name="status_note_fmt">\n备注: %1$s</string>
+    <string name="warn_no_fix">⚠ 无定位</string>
+    <string name="warn_no_wifi">⚠ 无WiFi</string>
+    <string name="status_recorded_ago">\n录制于 %1$d 分钟前</string>
+    <string name="status_no_fix">\n⚠ 无定位 fix · 室外重录</string>
+    <string name="status_no_wifi">\n⚠ 无 WiFi 数据</string>
+    <string name="status_parse_failed">\n解析失败 · 重录</string>
+    <string name="status_place_count">\n\n共 %1$d 个地点</string>
+    <string name="places_empty">还没有地点 · 点上面「开始实录」</string>
+
+    <string name="rec_channel">实录</string>
+    <string name="rec_notif_title">定位实录中</string>
+    <string name="rec_notif_text">保持在目标地点静止, 请勿关闭</string>
+
+    <!-- 实录结束诊断 (机器可读标签在 RecorderService 里) -->
+    <string name="diag_no_cell">基站交叉校验会穿帮</string>
+    <string name="diag_no_gnss">卫星状态无法回放</string>
+    <string name="diag_no_gps_fix">天空不可见/室内, 实录坐标不可信</string>
+    <string name="diag_no_scan">见上面 startScan/broadcast 诊断</string>
+    <string name="diag_scan_stale">%1$d/%2$d 次扫描都是旧缓存 —— 录制时请点亮屏幕并保持界面在前台, 息屏会让扫描被挂起</string>
+
+    <!-- 数据集导入 / 导出 (SAF) -->
+    <string name="btn_export">导出</string>
+    <string name="btn_import">导入</string>
+    <string name="export_file_name">locrec-place.json</string>
+    <string name="toast_no_place_to_export">没有可导出的地点</string>
+    <string name="toast_export_ok">已导出</string>
+    <string name="toast_export_failed">导出失败: %1$s</string>
+    <string name="toast_import_ok">已导入: %1$s</string>
+    <string name="toast_import_failed">导入失败 —— 不是有效的 LocRec 数据集文件</string>
+    <string name="toast_import_read_failed">导入失败: %1$s</string>
+    <string name="toast_import_too_large">导入失败 —— 文件超过 32 MB 上限</string>
+</resources>

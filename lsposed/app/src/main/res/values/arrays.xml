@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- LSPosed 推荐作用域: 启用模块时自动建议勾选 -->
+    <string-array name="scope">
+        <item>com.jingyao.easybike</item>
+        <item>com.chaoxing.mobile</item>
+        <item>com.tencent.mm</item>
+    </string-array>
+</resources>
