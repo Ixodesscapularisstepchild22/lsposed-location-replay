@@ -26,6 +26,25 @@
 > injection that LSPosed provides. **Without LSPosed installed and enabled on the device, the
 > module does nothing at all.** The build output is a module APK, **not** a standalone location app.
 
+> [!CAUTION]
+> **Do not scope "System Framework / Android" unless you actually need it.**
+>
+> That scope is the only case in which LocRec is loaded into `system_server`. Injecting into
+> `system_server` widens the surface rewritten by the injection framework, and on some devices —
+> in particular those running several Zygisk / LSPosed modules at once — it can leave
+> `system_server` unable to start, producing a **bootloop**, i.e. a device that no longer boots
+> normally.
+>
+> This is not hypothetical. On the maintainer's own test device, a Zygisk Next + LSPosed setup
+> aborted `system_server` five seconds after start (`Failed to recognize implicit suspend check`,
+> recorded in a native tombstone), crashed `zygote64` inside `libzygisk.so` while forking
+> `system_server`, and produced **five bootloop incidents** that were recovered only by a
+> third-party rescue module.
+>
+> Scope only the apps you actually target, and keep a way to disable the module if the device
+> fails to boot (LSPosed manager from recovery, safe mode, or a bootloop-protection module).
+> See Section 6 of [DISCLAIMER.md](./DISCLAIMER.md).
+
 ## What it is
 
 LocRec takes a snapshot of the real positioning environment first, then replays that snapshot,
@@ -69,7 +88,7 @@ capability to circumvent presence verification.
 | **LSPosed** | **Required.** The module is loaded by LSPosed and uses the Xposed API (`de.robv.android.xposed`) it provides, together with scope injection. LSPosed must be installed on the device and the module must be enabled |
 | Android | **7.0 (API 24) or newer** |
 | Permission | `ACCESS_FINE_LOCATION` (needed for recording) |
-| Module scope | At least the target app; also "System Framework / Android" for system-wide coverage |
+| Module scope | At least the target app. Add "System Framework / Android" only if system-wide coverage is genuinely required — see the caution above |
 
 Make sure LSPosed itself works on your device before installing.
 
@@ -81,10 +100,11 @@ Make sure LSPosed itself works on your device before installing.
 4. Open LocRec and grant the location permission.
 
 Selecting "System Framework / Android" makes the rewrite cover every app, including ones not
-individually scoped. With that scope, **installing a new version of the module requires a device
-reboot** before the new code is loaded: system-level hooks are installed when `system_server`
-starts. Switching places and toggling spoofing do not need a reboot — they take effect within
-3 seconds.
+individually scoped. **This is optional and carries real risk — prefer scoping the individual
+apps you target** (see the caution above). With that scope, **installing a new version of the
+module requires a device reboot** before the new code is loaded: system-level hooks are installed
+when `system_server` starts. Switching places and toggling spoofing do not need a reboot — they
+take effect within 3 seconds.
 
 ## Usage
 

@@ -25,6 +25,22 @@
 > **设备上没有安装并启用 LSPosed，模块完全无法工作。**
 > 构建产物是模块 APK，**不是**可以独立运行的定位应用。
 
+> [!CAUTION]
+> **除非确有需要，不要勾选「系统框架 / Android」作用域。**
+>
+> 这是 LocRec 唯一会被加载进 `system_server` 的场景。向 `system_server` 注入会扩大注入框架
+> 改写的范围，在部分设备上（尤其是同时启用多个 Zygisk / LSPosed 模块时）可能导致
+> `system_server` 无法启动，从而引发**反复重启（bootloop）**，即设备无法正常开机。
+>
+> 这不是假设。在维护者自己的测试机上，Zygisk Next + LSPosed 组合曾导致 `system_server`
+> 启动 5 秒即被 ART 运行时中止（`Failed to recognize implicit suspend check`，见 native
+> tombstone），`zygote64` 在 fork `system_server` 时崩在 `libzygisk.so` 内，并累计造成
+> **5 次 bootloop**，最终依赖第三方救砖模块才恢复。
+>
+> 请只勾选实际需要作用的目标应用，并保留一条设备无法开机时的退路（进入 recovery 用 LSPosed
+> 管理器停用模块、安全模式，或一个 bootloop 保护模块）。详见
+> [DISCLAIMER.zh-CN.md](./DISCLAIMER.zh-CN.md) 第 5 节。
+
 ## 这是什么
 
 LocRec 先从真实环境采集一份定位快照，之后把这份快照按原节奏回放给作用域内选定的应用。
@@ -62,7 +78,7 @@ WiFi 扫描、基站、NMEA、卫星状态一并采集与回放，因此回放�
 | **LSPosed** | **必需。** 模块由 LSPosed 加载，并使用其提供的 Xposed API（`de.robv.android.xposed`）与作用域注入能力。设备上需已安装 LSPosed，且模块处于启用状态 |
 | Android | **7.0（API 24）及以上** |
 | 权限 | `ACCESS_FINE_LOCATION`（实录时需要） |
-| 模块作用域 | 至少勾选目标应用；需要全局生效时再勾选「系统框架 / Android」 |
+| 模块作用域 | 至少勾选目标应用。仅在确实需要全局覆盖时才勾选「系统框架 / Android」，并注意上方风险提示 |
 
 安装前请先确认设备上的 LSPosed 工作正常。
 
@@ -74,6 +90,7 @@ WiFi 扫描、基站、NMEA、卫星状态一并采集与回放，因此回放�
 4. 打开 LocRec，授予定位权限。
 
 勾选「系统框架 / Android」可让改写覆盖所有应用（包括未单独勾选作用域的）。
+**该作用域是可选的，且伴随真实风险，建议只勾选实际需要作用的目标应用**（见上方提示）。
 该作用域下，**安装新版本模块后需要重启设备**才会加载新代码：系统级 hook 在 `system_server`
 启动时安装。切换地点、开关伪装不需要重启，3 秒内热生效。
 

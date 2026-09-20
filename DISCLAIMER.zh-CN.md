@@ -65,6 +65,13 @@ LocRec 是一个**定位信号实录与回放工具**，用于在开发者**自�
 
 - 本模块依赖 **LSPosed** 等运行时注入框架。修改系统行为可能导致设备不稳定、
   应用崩溃或数据丢失。
+- **`system_server` 注入风险**：勾选「系统框架 / Android」作用域会使注入框架把本模块加载进
+  `system_server`。这会扩大运行时被改写的范围，并可能导致 `system_server` 无法启动，
+  进而引发**反复重启（bootloop）**，即设备无法正常开机。在维护者自己的测试机上确曾发生：
+  Zygisk Next + LSPosed 组合下 `system_server` 启动 5 秒即被 ART 运行时中止
+  （`Failed to recognize implicit suspend check`），`zygote64` 在 fork `system_server` 时
+  崩在 `libzygisk.so` 内，累计记录到 5 次 bootloop。**除非确实需要全局覆盖，请只勾选目标应用，
+  并保留一条独立于本模块、在设备无法开机时仍能停用它的途径。**
 - 部分应用具备运行环境检测能力（注入框架检测、调试状态检测、系统一致性校验等），
   使用本模块可能导致这些应用拒绝服务或标记账号。
 - 部分应用会在**服务端**交叉校验 WiFi、基站、IP、历史轨迹等信号。
